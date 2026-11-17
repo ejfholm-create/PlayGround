@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="sv">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Kärnkraft</title>
+  <link rel="icon" href="data:," />
+  <style>
+    :html,body{height:100%}
+    *{box-sizing:border-box} :root{font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;color:#eaf1f5}
+    body{margin:0;overflow:hidden;background:#081119}
+    #app{height:100dvh;display:grid;grid-template-columns:260px 1fr 280px;background:radial-gradient(circle at 55% 40%,#17313a 0,#0b171d 38%,#070d11 100%)}
+    .panel{background:rgba(8,18,23,.88);border-color:rgba(180,218,225,.12);backdrop-filter:blur(14px);z-index:5}
+    #left{border-right:1px solid rgba(180,218,225,.12);padding:22px 18px;display:flex;flex-direction:column;gap:14px}
+    #right{border-left:1px solid rgba(180,218,225,.12);padding:22px 18px}
+    .brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.12em;font-size:14px;color:#ffcf54}.brand-mark{width:36px;height:36px;border:1px solid #d9b852;border-radius:50%;display:grid;place-items:center;color:#ffcf54;font-size:20px}
+    .sub{color:#78909a;font-size:11px;letter-spacing:.18em;text-transform:uppercase;margin-top:-8px}
+    .stat{border:1px solid rgba(180,218,225,.12);border-radius:10px;padding:12px 12px 10px;background:rgba(255,255,255,.025)}
+    .stat-head{display:flex;justify-content:space-between;align-items:center;font-size:11px;text-transform:uppercase;letter-spacing:.09em;color:#91a7ae}
+    .stat-value{font-size:25px;font-weight:750;color:#fff;margin:5px 0}.unit{font-size:11px;color:#78909a;margin-left:4px}
+    .bar{height:5px;background:#1b3037;border-radius:20px;overflow:hidden}.fill{height:100%;width:50%;background:#66d6be;border-radius:20px;transition:width .25s,background .25s}
+    .button-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:auto}.control-btn{height:58px;border:1px solid rgba(180,218,225,.16);border-radius:9px;background:#101f25;color:#dfeaed;cursor:pointer;text-align:left;padding:8px 10px;transition:.15s}.control-btn:hover{border-color:#73aaab;background:#162930}.control-btn:active{transform:translateY(1px)}.control-btn span{display:block;font-size:11px;color:#80969d;margin-top:5px}.control-btn strong{font-size:13px}
+    #game{position:relative;min-width:0;overflow:hidden}.world{position:absolute;inset:0}
+    canvas{display:block;width:100%;height:100%}
+    .screen-title{position:absolute;top:22px;left:28px;pointer-events:none}.screen-title h1{font-size:18px;margin:0 0 5px}.screen-title p{font-size:11px;color:#78909a;margin:0;letter-spacing:.12em;text-transform:uppercase}
+    .alert{position:absolute;top:22px;right:28px;border:1px solid rgba(255,196,82,.28);background:rgba(43,35,20,.84);color:#ffc657;border-radius:7px;padding:8px 11px;font-size:11px;display:flex;gap:8px;align-items:center}.alert-dot{width:7px;height:7px;border-radius:50%;background:#ffc657;box-shadow:0 0 12px #ffc657}
+    .right-title{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#92a7ad;margin:0 0 13px}.log{display:flex;flex-direction:column;gap:8px}.event{border-left:2px solid #4e777d;padding:7px 9px;background:rgba(255,255,255,.025);font-size:12px;color:#c6d3d6}.event small{display:block;color:#6f8790;font-size:10px;margin-bottom:3px}.event.warning{border-color:#ffc657}.event.good{border-color:#65cba9}
+    .system-row{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(180,218,225,.08);padding:10px 0;font-size:12px}.status{font-size:9px;color:#67c9ac;text-transform:uppercase;letter-spacing:.08em}.status.warn{color:#ffc657}.status.danger{color:#ff7b67}
+    .bottom-status{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);display:flex;gap:6px}.mode{border:1px solid rgba(180,218,225,.12);background:rgba(8,18,23,.88);border-radius:20px;padding:7px 11px;font-size:10px;color:#80969d}.mode.live{color:#8ce0c5}.mode.live:before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:#63cfae;margin-right:6px}
+    #overlay{position:absolute;inset:0;z-index:20;background:rgba(5,12,15,.78);display:none;place-items:center;backdrop-filter:blur(8px)}#overlay.show{display:grid}.modal{width:min(420px,calc(100% - 32px));border:1px solid rgba(180,218,225,.18);border-radius:14px;background:#0d1b21;padding:28px;text-align:center}.modal h2{margin:0 0 8px}.modal p{color:#91a5aa;font-size:13px;line-height:1.6}.modal button{border:0;border-radius:8px;background:#63cfae;color:#092018;font-weight:800;padding:12px 18px;cursor:pointer}
+    @media(max-width:850px){#app{grid-template-columns:190px 1fr}#right{display:none}.brand{font-size:12px}.stat-value{font-size:21px}}
+    @media(max-width:600px){#app{grid-template-columns:1fr;grid-template-rows:1fr 132px}#left{grid-row:2;border-right:0;border-top:1px solid rgba(180,218,225,.12);padding:8px 10px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px}.brand,.sub{display:none}.stat{padding:7px}.stat-value{font-size:16px;margin:2px 0}.button-grid{grid-column:1/-1;margin:0;display:grid;grid-template-columns:repeat(4,1fr)}.control-btn{height:43px;padding:5px}.control-btn span{display:none}.screen-title{top:12px;left:14px}.alert{top:12px;right:12px}.bottom-status{bottom:9px}}
+  </style>
+</head>
+<body>
+<div id="app">
+  <aside id="left" class="panel">
+    <div class="brand"><div class="brand-mark">⚛</div> KÄRNKRAFT</div><div class="sub">Driftkontroll · 1/1</div>
+    <div class="stat"><div class="stat-head"><span>Effekt</span><b id="effPct">70%</b></div><div class="stat-value"><span id="power">1 820</span><span class="unit">MW</span></div><div class="bar"><div class="fill" id="powerBar"></div></div></div>
+    <div class="stat"><div class="stat-head"><span>Reaktortemperatur</span><b id="tempState">Normal</b></div><div class="stat-value"><span id="temp">289</span><span class="unit">°C</span></div><div class="bar"><div class="fill" id="tempBar"></div></div></div>
+    <div class="stat"><div class="stat-head"><span>Säkerhetsnivå</span><b id="safePct">94%</b></div><div class="stat-value"><span id="safe">94</span><span class="unit">%</span></div><div class="bar"><div class="fill" id="safeBar"></div></div></div>
+    <div class="button-grid">
+      <button class="control-btn" id="boost"><strong>ÖKA EFFEKT</strong><span>+100 MW</span></button>
+      <button class="control-btn" id="cool"><strong>KYLA</strong><span>−6 °C</span></button>
+      <button class="control-btn" id="pump"><strong>PUMP</strong><span>Återställ</span></button>
+      <button class="control-btn" id="scram"><strong>SCRAM</strong><span>Nödhalt</span></button>
+    </div>
+  </aside>
+  <main id="game"><canvas id="canvas"></canvas><div class="world"></div>
+    <div class="screen-title"><h1>Reaktorhall R-1</h1><p>Enhetsstatus · Operativ</p></div>
+    <div class="alert"><div class="alert-dot"></div><span id="alertText">SYSTEM I NORMALDRIFT</span></div>
+    <div class="bottom-status"><div class="mode live">LIVE</div><div class="mode" id="clock">12:04:18</div><div class="mode">Säkerhetslarm · Inaktiv</div></div>
+  </main>
+  <aside id="right" class="panel"><h3 class="right-title">Aktivitetslogg</h3><div class="log" id="log"></div><h3 class="right-title" style="margin-top:24px">System</h3><div id="systems"><div class="system-row"><span>Primärkrets</span><b class="status" id="stPrimary">Stabil</b></div><div class="system-row"><span>Kylning</span><b class="status" id="stCooling">Optimal</b></div><div class="system-row"><span>Kontrollstavar</span><b class="status" id="stRods">Nedtryckta</b></div><div class="system-row"><span>Turbiner</span><b class="status" id="stTurbine">Synkroniserad</b></div></div></aside>
+</div>
+<div id="overlay"><div class="modal"><h2 id="modalTitle">DRIFT STOPPAD</h2><p id="modalText">Reaktorn har säkrats. Kontrollera systemet och starta om.</p><button id="restart">STARTA OM</button></div></div>
+<script src="game.js"></script>
+</body>
+</html>
