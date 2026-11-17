@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#101510">
+  <meta name="description" content="A tiny moonlit fantasy adventure. Gather the three ember sigils and open the ancient gate.">
+  <title>Lanternfall — The Hollow Crown</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="game-shell">
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="Lanternfall home">
+        <span class="brand-mark">✦</span>
+        <span class="brand-name">LANTERNFALL</span>
+      </a>
+      <div class="chapter"><span class="chapter-dot"></span> THE HOLLOW CROWN <span class="chapter-divider">/</span> CHAPTER I</div>
+      <button class="sound-button" id="sound-toggle" type="button" aria-label="Toggle sound"><span id="sound-icon">♪</span><span class="sound-label">SOUND OFF</span></button>
+    </header>
+
+    <section class="game-layout" aria-label="Game">
+      <aside class="side-panel left-panel">
+        <div class="eyebrow">YOUR QUEST</div>
+        <h1>The last<br>light of <em>Emberfen</em></h1>
+        <p class="story">The old ward has gone dark. Gather the lost sigils before the hollow keep swallows the forest whole.</p>
+        <div class="objective-card">
+          <div class="objective-icon">✧</div>
+          <div><div class="objective-title">REKINDLE THE WARD</div><div class="objective-caption">Find all 3 ember sigils</div></div>
+        </div>
+        <div class="sigil-list" id="sigil-list" aria-label="Sigils collected">
+          <span class="sigil-slot" title="First ember sigil">✦</span>
+          <span class="sigil-slot" title="Second ember sigil">✦</span>
+          <span class="sigil-slot" title="Third ember sigil">✦</span>
+        </div>
+        <div class="side-rule"></div>
+        <div class="eyebrow">TRAIL NOTES</div>
+        <div class="note-row"><span class="note-icon">☽</span><span>Shadows are drawn to light.</span></div>
+        <div class="note-row"><span class="note-icon">⌁</span><span>The gate lies beyond the old stones.</span></div>
+        <div class="note-row"><span class="note-icon">✧</span><span>A quick step can slip past danger.</span></div>
+        <div class="left-footer"><span class="pulse-dot"></span> <span id="world-status">THE FEN IS QUIET</span></div>
+      </aside>
+
+      <div class="stage-column">
+        <div class="stage-frame">
+          <div class="stage-topline"><span><i class="live-dot"></i> EMBERFEN WILDS</span><span id="day-label">MOONRISE · 01</span></div>
+          <div class="canvas-wrap">
+            <canvas id="game" aria-label="Lanternfall game world" role="img"></canvas>
+            <div class="screen-overlay" id="intro-overlay">
+              <div class="intro-card">
+                <div class="intro-spark">✦</div>
+                <div class="eyebrow">A MOONLIT ADVENTURE</div>
+                <h2>When the ward<br>goes <em>dark</em>…</h2>
+                <p>Three embers. One lost forest.<br>Will you carry the light?</p>
+                <button class="primary-button" id="begin-button" type="button">ENTER THE FEN <span>→</span></button>
+                <div class="intro-hint">NO MAP. JUST FOLLOW THE GLOW.</div>
+              </div>
+            </div>
+            <div class="screen-overlay hidden" id="end-overlay">
+              <div class="intro-card end-card">
+                <div class="intro-spark" id="end-spark">✦</div>
+                <div class="eyebrow" id="end-eyebrow">THE WARD REMEMBERS</div>
+                <h2 id="end-title">The light<br>holds <em>fast</em>.</h2>
+                <p id="end-copy">The Hollow Crown has fallen quiet.</p>
+                <button class="primary-button" id="again-button" type="button">PLAY AGAIN <span>↻</span></button>
+              </div>
+            </div>
+            <div class="toast hidden" id="toast" aria-live="polite"></div>
+            <div class="touch-controls" aria-label="Touch movement controls">
+              <button class="touch-key touch-up" data-key="ArrowUp" aria-label="Move up">▲</button>
+              <button class="touch-key touch-left" data-key="ArrowLeft" aria-label="Move left">◀</button>
+              <button class="touch-key touch-down" data-key="ArrowDown" aria-label="Move down">▼</button>
+              <button class="touch-key touch-right" data-key="ArrowRight" aria-label="Move right">▶</button>
+              <button class="touch-dash" id="dash-button" aria-label="Dash">✧<small>DASH</small></button>
+            </div>
+          </div>
+          <div class="stage-bottomline"><span><span class="keycap">WASD</span> OR <span class="keycap">↑ ↓ ← →</span> TO MOVE</span><span><span class="keycap">SPACE</span> DASH</span><span class="stage-coord" id="coord">X 08 · Y 08</span></div>
+        </div>
+        <div class="below-stage"><span class="quote-mark">“</span><span>Even a small flame can make a shadow turn.</span><span class="quote-credit">— OLD FEN SAYING</span></div>
+      </div>
+
+      <aside class="side-panel right-panel">
+        <div class="eyebrow">WAYFINDER</div>
+        <div class="minimap-frame"><canvas id="minimap" width="180" height="180" aria-label="Minimap"></canvas><span class="map-label">EMBERFEN</span></div>
+        <div class="map-legend"><span><i class="legend-player"></i> YOU</span><span><i class="legend-sigil"></i> EMBER</span><span><i class="legend-gate"></i> GATE</span></div>
+        <div class="side-rule"></div>
+        <div class="eyebrow">VITALS</div>
+        <div class="vitals-label"><span>HEARTLIGHT</span><span id="health-count">♥ ♥ ♥</span></div>
+        <div class="health-track"><span id="health-fill"></span></div>
+        <div class="vitals-caption">Keep clear of the hollow ones.</div>
+        <div class="side-rule"></div>
+        <div class="eyebrow">FIELD GUIDE</div>
+        <div class="guide-item"><span class="guide-symbol player-symbol">♙</span><span><b>Wayfarer</b><small>Your lantern keeps the dark at bay.</small></span></div>
+        <div class="guide-item"><span class="guide-symbol shade-symbol">◉</span><span><b>Hollow shade</b><small>They circle the old stones.</small></span></div>
+        <div class="guide-item"><span class="guide-symbol gate-symbol">⌑</span><span><b>Ward gate</b><small>It opens when all embers return.</small></span></div>
+        <div class="right-footer"><span>EMBERFEN ARCHIVE</span><span>✦ &nbsp; 01 / 03</span></div>
+      </aside>
+    </section>
+    <footer class="page-footer"><span>AN ORIGINAL LITTLE FANTASY</span><span>MADE FOR THE MOONLIT HOURS &nbsp; · &nbsp; 2026</span><span>✦ &nbsp; LANTERNFALL</span></footer>
+  </main>
+  <script src="game.js" defer></script>
+</body>
+</html>
